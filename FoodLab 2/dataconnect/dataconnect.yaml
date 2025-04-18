@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "foodlab"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "foodlab-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

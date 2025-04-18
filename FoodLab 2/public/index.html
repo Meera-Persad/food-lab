@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        
+       
+        header {
+          position: fixed;
+          top: 0;
+          width: 100vw;
+          z-index: 1000;
+          background-color: #BC6C25;
+           padding: 10px 0;
+        }
+
+        .nav-links {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+          padding: 10px 0;
+          width: 100%;
+          flex-wrap: wrap; 
+          text-align: center;
+          color: #FEFAE0;
+          background-color: #BC6C25;
+        }
+
+        .nav-links a {
+          
+          font-size: 1rem;
+          letter-spacing: 1px;
+          padding: 5px 10px;
+          text-decoration: none;
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          flex: 1 1 auto;
+        }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        background-color: #FEFAE0;
+        color: #BC6C25;
+        font-weight: bold;
+        outline: 2px solid #DDA15E;
+      }
+      .fav-icon {
+          width: 18px;
+          height: 18px;
+      
+      background-color: #DDA15E; color: white;
+          font-size: 0.75rem; 
+          font-weight: bold;
+          padding: 4px 8px;  
+          border-radius: 50%;
+          position: absolute;
+          top: -5px;
+          right: -10px;  display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          min-width: 20px; 
+           min-height: 20px; 
+       }
+
+      #view-favs {
+
+      background-color: #BC6C25; 
+      color: white; 
+      font-size: 0.75rem;
+      font-weight: bold;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      position: absolute;
+      top: -5px;
+      right: -12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+        border: 2px solid #FEFAE0;
+      }
+      #fav-count {
+          position: absolute;
+          top: 0;
+          right: 0;
+          font-size: 0.85rem;
+      }
+      @media (max-width: 768px) {
+          .nav-links {
+              flex-direction: column; 
+              align-items: center; 
+          }
+
+          .nav-links a {
+              padding: 10px 20px; 
+              text-align: center; 
+          }
+      }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://www.design-hero.com/wp-content/uploads/project-sector-food-drink-featuredf-flipped-768x470.jpg') no-repeat center;
+            background-size: cover;
+            padding-left: 15%;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin: 0px;
+            letter-spacing: 2px;
+
+        }
+        .hero h1 span{
+            color: #ffffff;
+                }
+                .hero h1 .restaurant {
+                    color: #ffffff;
+        }
+        .welcome {
+            font-size: 1.5rem;
+            color: #BC6C25;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            margin-top: 20px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+
+        .product-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+      @media (max-width: 768px) {
+      article.row {
+        flex-direction: column;
+      }
+
+
+      nav.nav-links:hover {
+
+          background-color: #BC6C25;
+        color: white;
+      }
+    }
+    </style>
+</head>
+
+<body>
+<header>
+   
+    <nav class="nav-links" id="navLinks">
+        <a href="/index.html">Home</a>
+        <a href="/meals.html">Meals</a>
+        <a href="/bev.html">Beverages and Desserts</a>
+        <a href="/favourites.html" id="favourites-link">
+             Favourites
+             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span id="fav-count" class="fav-badge"> </span>
+            </a>
+        <a href="/mealdbapi.html">Meal Generator</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/login.html">Account</a>
+    </nav>
+</header>
+<section class="hero">
+  <div class="welcome">Welcome to </div>
+    <h1>BYTE & BITE</h1>
+    <div class="tagline">MAKING THE DELICIOUS PREMIUM FOOD SINCE 1990. YOU CAN ALSO INVESTIGATE THE NUTRITITONAL BREAKDOWN OF DIFFERENT FOOD ITEMS AND EVEN GENERATE YOUR OWN MEAL PLANS FOR A SELECTED CATEGORY TAILORED FOR YOU!<br>32 Hungry Lane, Feed Me Village</div>
+
+   
+      <div id="locationDisplay"></div>
+        </section>
+
+
+        </section>
+      <script>
+        function displayLocation() {
+          // Random coordinates within southern Trinidad
+          const lat = (Math.random() * (10.3000 - 10.0000) + 10.0000).toFixed(6);
+          const lon = (Math.random() * (-61.4000 + 61.7000) - 61.7000).toFixed(6);
+
+          const locationDisplay = document.getElementById('locationDisplay');
+
+          if (!locationDisplay) {
+            console.error('Element with ID "locationDisplay" not found.');
+            return;
+          }
+
+          locationDisplay.innerHTML = `
+            <p>🍽️ Location - Find Us </p>
+            <p>Latitude: ${lat}, Longitude: ${lon}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}" target="_blank" rel="noopener noreferrer">
+              View on Google Maps
+            </a>
+          `;
+        }
+
+       
+
+
+
+        function loadFavourites() {
+            let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+            let container = document.getElementById('favourites-list');
+            let total = 0;
+            container.innerHTML = '';
+          }
+
+
+
+        function updateFavBadgeOnly() {
+          let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+          const favCountSpan = document.getElementById('fav-count');
+          if (!favCountSpan) return;
+          if (favs.length > 0) {
+            favCountSpan.innerText = favs.length;
+            favCountSpan.style.display = 'inline-block';
+          } else {
+            favCountSpan.innerText = '0';
+            favCountSpan.style.display = 'none';
+          }
+        }
+
+          window.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('#navLinks a');
+            const currentPath = window.location.pathname;
+
+            links.forEach(link => {
+              if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+              }
+            });
+
+            updateFavBadgeOnly(); 
+          });
+
+
+       
+
+
+
+      </script>
+
+
+<script type="module" src="auth-header.js"></script>
+</body>
+</html>

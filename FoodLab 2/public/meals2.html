@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Meals</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Playfair Display', serif;
+    }
+
+    body {
+      background-color: gainsboro;
+      text-align: center;
+      padding: 20px;
+    }
+
+    nav {
+      background-color: #283618;
+      padding: 15px 0;
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    section {
+      margin: 20px 0;
+    }
+
+    button {
+      background-color: #283618;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 20px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: white;
+      color: #283618;
+      border: 2px solid #283618;
+    }
+
+    input[type="search"] {
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      width: 200px;
+    }
+    section.filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+      padding: 0 20px; 
+      flex-wrap: wrap; 
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box input[type="search"] {
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 2px solid #283618;
+    }
+
+
+    .flip-card {
+      background-color: transparent;
+      width: 250px;
+      height: 250px;
+      perspective: 1000px;
+      margin: 15px;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      border-radius: 15px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 15px;
+      background-color: white;
+    }
+
+    .flip-card-front {
+      background-color: #FEFAE0;
+      border-radius: 15px;
+      border: 2px solid #283618;
+    }
+
+    .flip-card-back {
+      background-color: #DDA15E;
+      transform: rotateY(180deg);
+      border-radius: 15px;
+    }
+
+    .flip-card-front img {
+      width: 150px;
+      height: 150px;
+      border-radius: 10px;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+      padding: 10px;
+      background-color: #DDA15E;
+    }
+
+
+
+    
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
+  
+    .container {
+      padding: 2px 16px;
+    }
+
+    main {
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      align-items: center;
+      align-content: space-between;
+      flex-grow: 10;
+    }
+
+    .containerSlide {
+      position: relative;
+
+    }
+
+   
+    .mySlides {
+      display: none;
+      border-radius: 15px;
+
+    }
+
+    .cursor {
+      cursor: pointer;
+    }
+
+   
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      top: 40%;
+      width: auto;
+      padding: 16px;
+      margin-top: -50px;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+      -webkit-user-select: none;
+      transform: translateY(-50%);
+    }
+
+   
+
+    .prev {
+      left: 10px;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .next {
+      right: 10px;
+      border-radius: 3px 0 0 3px;
+    }
+
+   
+    .prev:hover,
+    .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    
+    .numbertext {
+      color: #f2f2f2;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+    }
+
+    
+    .caption-container {
+      text-align: center;
+      background-color: #FEFAE0;
+      padding: 2px 16px;
+      color: white;
+    }
+
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+   
+    .column {
+      float: left;
+      width: 16.66%;
+    }
+
+   
+    .demo {
+      opacity: 0.6;
+    }
+
+    .active,
+    .demo:hover {
+      opacity: 1;
+    }
+
+    html,
+    body {
+     
+      background-image: url("https://thumbs.dreamstime.com/b/fork-spoon-knife-crossed-vector-illustration-cutlery-set-isolated-dark-background-meal-time-icon-eps-88763217.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: repeat;
+      background-size: 70%;
+
+    }
+
+    html {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100vw;
+      z-index: 1000;
+      background-color: #BC6C25;
+       padding: 10px 0;
+    }
+    
+    
+     .linksmeals {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background-color: #BC6C25;
+      padding: 10px 0;
+      margin: 0;
+       color: #FEFAE0;
+      width: 100%;
+    } 
+    
+    .linksmeals a {
+      color: #FEFAE0;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 5px 10px;
+      text-decoration: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex: 1 1 auto;
+    }
+    
+   
+    .linksmeals a:hover,
+    .linksmeals a.active {
+      background-color: #FEFAE0;
+      color: #BC6C25;
+      font-weight: bold;
+      outline: 2px solid #DDA15E;
+    }
+
+    .fav-icon {
+        width: 18px;
+        height: 18px;
+    
+    background-color: #DDA15E; color: white;
+        font-size: 0.75rem; 
+        font-weight: bold;
+        padding: 4px 8px;  
+        border-radius: 50%;
+        position: absolute;
+        top: -5px;
+        right: -10px;  display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 20px; 
+         min-height: 20px; 
+     }
+
+
+
+  
+    .unforgettable-favs {
+      .pacifico-regular {
+        font-family: 'Playfair Display', serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+    }
+    .unforgettable-favs{
+      background-color:#DDA15E;
+      padding-bottom:0;
+      margin-bottom:0;
+      border-radius: 15px;
+      width: 90vw;
+      
+    }
+
+    #view-favs {
+      background-color: #283618;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      height: 5vh;
+      width: 90vw;
+      text-decoration: none;
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+    }
+          #view-favs:hover{
+            background-color: #FEFAE0;
+            color: black;
+            border: 2px solid #BC6C25;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+  </style>
+</head>
+
+<body>
+  <header>
+
+    <nav class="linksmeals" id="navLinks">
+      <a href="/index.html">Home</a>
+      <a href="/meals.html">Meals</a>
+      <a href="/bev.html">Beverages and Desserts</a>
+      <a href="/favourites.html" id="favourites-link">
+         Favourites
+         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        <span id="fav-count" class="fav-badge" style="display: none;">0</span>
+        </a>
+       <a href="/mealdbapi.html">Meal Generator</a>
+      <a href="/contact.html">Contact Us</a>
+      <a href="/login.html">Account</a>
+    </nav>
+  </header>
+<br><br><br><br><br>
+  <nav>
+    <h1>MEALS</h1>
+
+  </nav>
+  <section class="filter-bar">
+    <div class="filter-buttons">
+    <button onclick="filterByType('Appetizers')">Appetizers</button>
+    <button onclick="filterByType('Entrees')">Entrees</button>
+    <button onclick="filterByType('Sides')">Sides</button>
+      </div>
+    <div class="search-box">
+    <input type="search" id="searchKey" placeholder="Search Name">
+    <button onclick="search()">Search</button>
+       </div>
+  </section>
+
+  <section class="unforgettable-favs">
+    * unforgettable favourites * unforgettable favourites * unforgettable favourites * unforgettable favourites
+    *unforgettable favourites *
+
+  </section>
+ 
+  <div class="containerSlide">
+
+   
+    <div class="mySlides">
+      <div class="numbertext">1 / 6</div>
+      <img src="https://kaleforniakravings.com/wp-content/uploads/2022/05/Shrimp-cocktail-2.jpg" style="width:90%; border-radius: 15px">
+    </div>
+
+    <div class="mySlides">
+      <div class="numbertext">2 / 6</div>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBkxEtagbysIFc8u1dBLBQxTkm6bB0O5xM9g&s"
+        style="width:90%; border-radius: 15px">
+    </div>
+
+    <div class="mySlides">
+      <div class="numbertext">3 / 6</div>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLV4AYlukxueN5I-PhGMy3_sUBH62VsLdkw&s"
+        style="width:90%; border-radius: 15px">
+    </div>
+
+    <div class="mySlides">
+      <div class="numbertext">4 / 6</div>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7N6kQBzsNB8HCU6uoEfiK-Z_7sup0ns8LDg&s"
+        style="width:90%; border-radius: 15px">
+    </div>
+
+    <div class="mySlides">
+      <div class="numbertext">5 / 6</div>
+      <img
+        src="https://images.stockcake.com/public/1/1/2/112df57d-b3f5-4fbf-a6c5-c0cdf07de61d_large/delicious-seafood-paella-stockcake.jpg"
+        style="width:90%; border-radius: 15px">
+    </div>
+
+    <div class="mySlides">
+      <div class="numbertext">6 / 6</div>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY6x5fXEItWPLJeCy9lKJxQqQTbkirDAfz0Q&s"
+        style="width:90% ; border-radius: 15px">
+    </div>
+
+   
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+   
+    <div class="caption-container">
+      <p id="caption"></p>
+    </div>
+
+   
+    <div class="row">
+      <div class="column">
+        <img class="demo cursor" src="https://kaleforniakravings.com/wp-content/uploads/2022/05/Shrimp-cocktail-2.jpg"
+          style="width:75px; height: 150px" onclick="currentSlide(1)" alt="Shrimp Cocktail">
+      </div>
+      <div class="column">
+        <img class="demo cursor"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBkxEtagbysIFc8u1dBLBQxTkm6bB0O5xM9g&s"
+          style="width:75px; height: 150px" onclick="currentSlide(2)" alt="Steak (Ribeye or Sirloin)">
+      </div>
+      <div class="column">
+        <img class="demo cursor"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLV4AYlukxueN5I-PhGMy3_sUBH62VsLdkw&s"
+          style="width:75px; height: 150px" onclick="currentSlide(3)" alt="Classic Cheeseburger">
+      </div>
+      <div class="column">
+        <img class="demo cursor"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7N6kQBzsNB8HCU6uoEfiK-Z_7sup0ns8LDg&s"
+          style="width:75px; height: 150px" onclick="currentSlide(4)" alt="French Fries">
+      </div>
+      <div class="column">
+        <img class="demo cursor"
+          src="https://images.stockcake.com/public/1/1/2/112df57d-b3f5-4fbf-a6c5-c0cdf07de61d_large/delicious-seafood-paella-stockcake.jpg"
+          style="width:75px; height: 150px" onclick="currentSlide(5)" alt="Seafood Paella">
+      </div>
+      <div class="column">
+        <img class="demo cursor"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY6x5fXEItWPLJeCy9lKJxQqQTbkirDAfz0Q&s"
+          style="width:75px; height: 150px" onclick="currentSlide(6)" alt="Chicken Alfredo Pasta">
+      </div>
+    </div>
+  </div>
+
+  <a href="favourites.html" id="view-favs">View Favourites</a>
+
+  <main id="result">
+  </main>
+
+  <aside id="favourites">
+
+  </aside>
+  <script>
+    let result = document.querySelector('#result');
+
+    function renderMeals(item) {
+
+      let html = '';
+      let result = document.querySelector('#result');
+      for (let rec of item) {
+        html += `<div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <img style="height:150px; width:150px" src="${rec.image}" alt="Avatar" style="width:100%">
+          <h3>${rec.name}</h3>
+           <p><b><em>Type: </em></b>${rec.type}</p> 
+        </div>
+        <div class="flip-card-back">
+          <p><b><em>Price: </em></b>$  ${rec.price}</p> 
+          <p><b><em>Description: </em></b>${rec.description}</p> 
+
+          <button onclick="addFavourite(${rec.id})">Add to Favourites</button>
+        </div>
+      </div>
+    </div>`;
+      }
+      result.innerHTML = html;
+    }
+
+    let state = [];
+    async function getData() {
+      const response = await fetch('https://api.sheety.co/0f95c0b451fedad87c0e87817b0d75c3/meals/sheet1');
+      const data = await response.json();
+      return data.sheet1;
+    }
+
+    async function showAllData() {
+      state = await getData();
+      renderMeals(state);
+    }
+    showAllData();
+
+    function filterByType(type) {
+      let filtered = [];
+      for (let rec of state) {
+        if (rec.type == type) {
+          filtered.push(rec);
+        }
+      }
+      renderMeals(filtered);
+    }
+
+    function search() {
+      let searchKey = document.querySelector('#searchKey').value;
+      let filtered = [];
+      for (let rec of state) {
+        let searchText = rec.name.toUpperCase();
+        searchKey = searchKey.toUpperCase();
+        if (searchText.search(searchKey) !== -1) {
+          filtered.push(rec);
+        }
+      }
+      renderMeals(filtered);
+    }
+
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+ 
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
+    }
+
+  
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      let dots = document.getElementsByClassName("demo");
+      let captionText = document.getElementById("caption");
+      if (n > slides.length) {slideIndex = 1}
+      if (n < 1) {slideIndex = slides.length}
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex - 1].style.display = "block";
+      dots[slideIndex - 1].className += " active";
+      captionText.innerHTML = dots[slideIndex - 1].alt;
+    }
+
+    let favourites = [];
+    
+    function addFavourite(id) {
+      let item = state.find(rec => rec.id == id);
+      let stored = JSON.parse(localStorage.getItem('favourites')) || [];
+      stored.push(item);
+      localStorage.setItem('favourites', JSON.stringify(stored));
+      
+    }
+    function removeFavourite(id) {
+      let index = favourites.findIndex(rec => rec.id == id);
+      favourites.splice(index, 1);
+      renderFavourites()
+    }
+    function renderFavourites() {
+      let favourites_list = document.querySelector('#favourites');
+      let html = "";
+      for (let rec of favourites) {
+        html += `
+        <div class="item">
+          <p>Item name: ${rec.name}</p>
+          <p>Price: ${rec.price}</p>
+          <p>Type: ${rec.type}</p>
+
+          <button onclick="removeFavourite(${rec.id})">Remove</button>
+        </div>
+        `;
+      }
+      favourites_list.innerHTML = html;
+    }
+
+
+  
+    window.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('#navLinks a');
+      const currentPath = window.location.pathname;
+
+      links.forEach(link => {
+        const href = link.getAttribute('href');
+        if (currentPath.includes(href)) {
+          link.classList.add('active');
+        }
+      });
+
+      updateFavBadgeOnly(); 
+    });
+
+    function loadFavourites() {
+      let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+      let container = document.getElementById('favourites-list');
+      let total = 0;
+      container.innerHTML = '';
+
+     
+      const favCountSpan = document.getElementById('fav-count');
+      if (favs.length > 0) {
+        favCountSpan.innerText = favs.length;
+        favCountSpan.style.display = 'inline-block';
+      } else {
+        favCountSpan.innerText = '0';
+        favCountSpan.style.display = 'none';
+      }
+
+      if (favs.length === 0) {
+        document.getElementById('clear-btn').style.display = 'none';
+        document.getElementById('total-cost').innerText = "Total Cost: $0.00";
+        return;
+      }
+
+      document.getElementById('clear-btn').style.display = 'inline-block';
+
+      favs.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        itemDiv.style.border = '1px solid #ccc';
+        itemDiv.style.margin = '10px 0';
+        itemDiv.style.padding = '10px';
+        itemDiv.style.borderRadius = '5px';
+        itemDiv.style.width = '450px';
+
+        itemDiv.innerHTML = `
+          <div class="item-content" style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div class="left-section" style="max-width: 60%;">
+              <p><strong>${item.name}</strong></p>
+              <img style="height:150px; width:200px" src="${item.image}" alt="${item.name}">
+              <p><b><em>Cost:</em></b> $${Number(item.price).toFixed(2)}</p>
+              <button onclick="removeFavourite(${index})">Remove</button>
+            </div>
+            <div class="nutrition right-section" id="nutrition-${index}" style="max-width: 35%;">
+              <em>Loading nutrition info...</em>
+            </div>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+
+        total += Number(item.price);
+        fetchNutrition(item.name, index);
+      });
+
+      document.getElementById('total-cost').innerText = "Total Cost: $" + total.toFixed(2);
+    }
+
+    function updateFavBadgeOnly() {
+      let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+      const favCountSpan = document.getElementById('fav-count');
+      if (!favCountSpan) return;
+      if (favs.length > 0) {
+        favCountSpan.innerText = favs.length;
+        favCountSpan.style.display = 'inline-block';
+      } else {
+        favCountSpan.innerText = '0';
+        favCountSpan.style.display = 'none';
+      }
+    }
+
+
+
+  </script>
+  <script type="module" src="auth-header.js"></script>
+</body>
+
+</html>

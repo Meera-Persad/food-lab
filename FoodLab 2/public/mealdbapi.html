@@ -1,0 +1,312 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Meal Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+  
+    <style>
+      body {
+        font-family: 'Playfair Display', serif;
+        background-color: #606C38;
+        margin: 0;
+        color: #FEFAE0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: auto;
+        background-color: #283618;
+        color: #FEFAE0;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 16px;
+        background-color: #BC6C25; 
+        color: #FEFAE0;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      button:hover {
+        box-shadow:  -5px -4px 18px 3px rgba(40,54,24,1);
+          -moz-box-shadow: -5px -4px 18px 3px rgba(40,54,24,1);
+          box-shadow: -5px -4px 18px 3px rgba(40,54,24,1);
+      }
+
+      #meals-output {
+        margin-top: 30px;
+      }
+
+      .meal-day {
+        margin-bottom: 20px;
+      }
+
+      .meal-day h3 {
+        margin-bottom: 10px;
+      }
+
+      .meal {
+        background-color: #DDA15E;
+        color: #283618;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        justify-content: center;
+        text-align: center;
+        justify-items: center;
+      }
+        .meal-container{
+          display: flex;
+          flex-direction: row;
+        }
+        .meal-content {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          text-align: center;
+          justify-items: center;
+        }
+
+        .meal-left {
+          flex: 1;
+          min-width: 200px;
+        }
+
+        .meal-right {
+          flex: 2;
+          min-width: 200px;
+        }
+
+        header {
+          position: fixed;
+          top: 0;
+          width: 100vw;
+          z-index: 1000;
+          background-color: #BC6C25;
+        }
+
+        .linksmeals {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+          background-color: #BC6C25;
+          padding: 10px 0;
+          width: 100%;
+        }
+
+        .linksmeals a {
+          color: white;
+          font-size: 1rem;
+          letter-spacing: 1px;
+          padding: 5px 10px;
+          text-decoration: none;
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .linksmeals a:hover,
+        .linksmeals a.active {
+          background-color: #FEFAE0;
+          color: #BC6C25;
+          font-weight: bold;
+          outline: 2px solid #DDA15E;
+        }
+
+
+    </style>
+  </head>
+  <body>
+    <header>
+
+      <nav class="linksmeals" id="navLinks">
+        <a href="/index.html">Home</a>
+        <a href="/meals.html">Meals</a>
+        <a href="/bev.html">Beverages and Desserts</a>
+        <a href="/favourites.html" id="favourites-link">
+           Favourites
+           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <span id="fav-count" class="fav-badge" style="display: none;">0</span>
+          </a>
+         <a href="/mealdbapi.html">Meal Generator</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/login.html">Account</a>
+      </nav>
+    </header>
+    <div>
+      <br><br><br><br>
+      <p>Not sure what to eat? Let our Meal Generator surprise you! Choose your favorite category and number of days, and we’ll serve up delicious meal ideas—three per day, handpicked just for you.  </p>
+    </div>
+    
+    <div class="container">
+      <h1>Meal Planner</h1>
+      <form id="meal-form">
+        <label for="days">Number of Days:</label>
+        <select id="days" required>
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="7">7</option>
+        </select>
+
+        <label for="category">Meal Category: (eg. Beef, Chicken, Dessert, Miscellaneous, Pasta, Seafood, Starter, Vegetarian) </label>
+        <input type="text" id="category" placeholder="e.g. Seafood" required />
+
+        <button type="submit">Generate Meals</button>
+      </form>
+
+      <div id="meals-output"></div>
+    </div>
+
+    <script>
+      const form = document.getElementById('meal-form');
+      const mealsOutput = document.getElementById('meals-output');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        mealsOutput.innerHTML = 'Loading meals...';
+
+        const days = parseInt(document.getElementById('days').value);
+        const category = document.getElementById('category').value.trim().toLowerCase();
+
+        let allMeals = [];
+
+        for (let i = 97; i <= 122; i++) { // a-z
+          const letter = String.fromCharCode(i);
+          const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`);
+          const data = await res.json();
+
+          if (data.meals) {
+            const filtered = data.meals.filter(meal =>
+              meal.strCategory && meal.strCategory.toLowerCase() === category
+            );
+            allMeals = allMeals.concat(filtered);
+          }
+        }
+
+        if (allMeals.length < days * 3) {
+          mealsOutput.innerHTML = `<p>Not enough meals found in the "${category}" category to fill ${days} days with 3 meals each.</p>`;
+          return;
+        }
+
+        shuffleArray(allMeals);
+        const selectedMeals = allMeals.slice(0, days * 3);
+
+        mealsOutput.innerHTML = '';
+        for (let day = 0; day < days; day++) {
+          const dayMeals = selectedMeals.slice(day * 3, (day + 1) * 3);
+          const dayDiv = document.createElement('div');
+          dayDiv.className = 'meal-day';
+          dayDiv.innerHTML = `<h2><b>Day ${day + 1}</b></h2>`;
+
+          dayMeals.forEach(meal => {
+            const mealDiv = document.createElement('div');
+            mealDiv.className = 'meal';
+            const ingredients = getFirstIngredients(meal, 5);
+
+            
+         
+            mealDiv.innerHTML = `
+              <div class="meal-content">
+                <div class="meal-left">
+                  <strong>${meal.strMeal}</strong><br>
+                  <img src="${meal.strMealThumb}" alt="${meal.strMeal}" width="200" />
+                </div>
+                <div class="meal-right">
+                <br><br><br>
+                  <em><b>Main Ingredients:</b></em>
+                  <ul>${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+                </div>
+              </div>
+            `;
+            
+              
+            dayDiv.appendChild(mealDiv);
+          });
+
+          mealsOutput.appendChild(dayDiv);
+        }
+      });
+
+      function getFirstIngredients(meal, count) {
+        const ingredients = [];
+        for (let i = 1; i <= count; i++) {
+          const ingredient = meal[`strIngredient${i}`];
+          if (ingredient && ingredient.trim() !== '') {
+            ingredients.push(ingredient);
+          }
+        }
+        return ingredients;
+      }
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+    
+        function loadFavourites() {
+          let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+          let container = document.getElementById('favourites-list');
+          let total = 0;
+          container.innerHTML = '';
+        }
+
+
+
+      function updateFavBadgeOnly() {
+        let favs = JSON.parse(localStorage.getItem('favourites')) || [];
+        const favCountSpan = document.getElementById('fav-count');
+        if (!favCountSpan) return;
+        if (favs.length > 0) {
+          favCountSpan.innerText = favs.length;
+          favCountSpan.style.display = 'inline-block';
+        } else {
+          favCountSpan.innerText = '0';
+          favCountSpan.style.display = 'none';
+        }
+      }
+
+        window.addEventListener('DOMContentLoaded', () => {
+          const links = document.querySelectorAll('#navLinks a');
+          const currentPath = window.location.pathname;
+
+          links.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+              link.classList.add('active');
+            }
+          });
+
+          updateFavBadgeOnly(); 
+        });
+
+
+    </script>
+    <script type="module" src="auth-header.js"></script>
+  </body>
+  </html>
