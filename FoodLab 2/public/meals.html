@@ -474,38 +474,38 @@
 
     <div class="mySlides">
       <div class="numbertext">1 / 6</div>
-      <img src="https://kaleforniakravings.com/wp-content/uploads/2022/05/Shrimp-cocktail-2.jpg" style="width:90%; border-radius: 15px">
+      <img src="https://kaleforniakravings.com/wp-content/uploads/2022/05/Shrimp-cocktail-2.jpg" style="width:65vw; height: 80vh;border-radius: 15px">
     </div>
 
     <div class="mySlides">
       <div class="numbertext">2 / 6</div>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBkxEtagbysIFc8u1dBLBQxTkm6bB0O5xM9g&s"
-        style="width:90%; border-radius: 15px">
+        style="width:65vw; height: 80vh;border-radius: 15px">
     </div>
 
     <div class="mySlides">
       <div class="numbertext">3 / 6</div>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLV4AYlukxueN5I-PhGMy3_sUBH62VsLdkw&s"
-        style="width:90%; border-radius: 15px">
+        style="width:65wv; height: 80vh;border-radius: 15px">
     </div>
 
     <div class="mySlides">
       <div class="numbertext">4 / 6</div>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7N6kQBzsNB8HCU6uoEfiK-Z_7sup0ns8LDg&s"
-        style="width:90%; border-radius: 15px">
+        style="width:65vw;height: 80vh; border-radius: 15px">
     </div>
 
     <div class="mySlides">
       <div class="numbertext">5 / 6</div>
       <img
         src="https://images.stockcake.com/public/1/1/2/112df57d-b3f5-4fbf-a6c5-c0cdf07de61d_large/delicious-seafood-paella-stockcake.jpg"
-        style="width:90%; border-radius: 15px">
+        style="width:65vw;height: 80vh; border-radius: 15px">
     </div>
 
     <div class="mySlides">
       <div class="numbertext">6 / 6</div>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY6x5fXEItWPLJeCy9lKJxQqQTbkirDAfz0Q&s"
-        style="width:90% ; border-radius: 15px">
+        style="width:65vw ;height: 80vh; border-radius: 15px">
     </div>
 
 
@@ -521,32 +521,32 @@
     <div class="row">
       <div class="column">
         <img class="demo cursor" src="https://kaleforniakravings.com/wp-content/uploads/2022/05/Shrimp-cocktail-2.jpg"
-          style="width:75px; height: 150px" onclick="currentSlide(1)" alt="Shrimp Cocktail">
+          style="width:100px; height: 150px" onclick="currentSlide(1)" alt="Shrimp Cocktail">
       </div>
       <div class="column">
         <img class="demo cursor"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBkxEtagbysIFc8u1dBLBQxTkm6bB0O5xM9g&s"
-          style="width:75px; height: 150px" onclick="currentSlide(2)" alt="Steak (Ribeye or Sirloin)">
+          style="width:100px; height: 150px" onclick="currentSlide(2)" alt="Steak (Ribeye or Sirloin)">
       </div>
       <div class="column">
         <img class="demo cursor"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxLV4AYlukxueN5I-PhGMy3_sUBH62VsLdkw&s"
-          style="width:75px; height: 150px" onclick="currentSlide(3)" alt="Classic Cheeseburger">
+          style="width:100px; height: 150px" onclick="currentSlide(3)" alt="Classic Cheeseburger">
       </div>
       <div class="column">
         <img class="demo cursor"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7N6kQBzsNB8HCU6uoEfiK-Z_7sup0ns8LDg&s"
-          style="width:75px; height: 150px" onclick="currentSlide(4)" alt="French Fries">
+          style="width:100px; height: 150px" onclick="currentSlide(4)" alt="French Fries">
       </div>
       <div class="column">
         <img class="demo cursor"
           src="https://images.stockcake.com/public/1/1/2/112df57d-b3f5-4fbf-a6c5-c0cdf07de61d_large/delicious-seafood-paella-stockcake.jpg"
-          style="width:75px; height: 150px" onclick="currentSlide(5)" alt="Seafood Paella">
+          style="width:100px; height: 150px" onclick="currentSlide(5)" alt="Seafood Paella">
       </div>
       <div class="column">
         <img class="demo cursor"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY6x5fXEItWPLJeCy9lKJxQqQTbkirDAfz0Q&s"
-          style="width:75px; height: 150px" onclick="currentSlide(6)" alt="Chicken Alfredo Pasta">
+          style="width:100px; height: 150px" onclick="currentSlide(6)" alt="Chicken Alfredo Pasta">
       </div>
     </div>
   </div>
@@ -575,7 +575,7 @@
             <div class="flip-card-inner">
               <div class="flip-card-front">
                 <img style="height:150px; width:150px" src="${rec.image}" alt="${rec.name}">
-                <h3>${rec.name}</h3>
+                <h6><b>${rec.name}</h6></b>
                 <p><b><em>Type: </em></b>${rec.type}</p> 
               </div>
               <div class="flip-card-back">
@@ -597,7 +597,9 @@
     // Function to fetch data from API
     async function getData() {
       try {
-        const response = await fetch('https://api.sheety.co/7b6265cbb8830b7dae6e7d6910623721/newm/sheet1');
+        // const response = await fetch('https://api.sheety.co/7b6265cbb8830b7dae6e7d6910623721/newm/sheet1');
+        const response = await fetch('https://api.sheety.co/b7b19635473b4f0b2e065f87f7c0dbce/mealsfinal/sheet1');
+        
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

@@ -506,7 +506,9 @@ html, body {
 
      let state = [];
      async function getData(){
-       const response = await fetch('https://api.sheety.co/7b6265cbb8830b7dae6e7d6910623721/newbevs/sheet1');
+      //  const response = await fetch('https://api.sheety.co/7b6265cbb8830b7dae6e7d6910623721/newbevs/sheet1');
+      const response = await fetch('https://api.sheety.co/b7b19635473b4f0b2e065f87f7c0dbce/bevfinal/sheet1');
+       
        const data = await response.json();
        return data.sheet1;
      }
